@@ -52,26 +52,25 @@ def create_message_processor():
         input = f"<start_of_turn>user\n{prompt_text}<end_of_turn>\n<start_of_turn>model\n"
         response = model.generate(input, max_length=512)
         # remove response tags
-        response = extract_substring(response)
+        response = trim_response(input, response)
 
         print(response) # REMOVE: FOR TESTING ONLY
         return response
 
     return process_message
 
-def extract_substring(text):
+def trim_response(prefix, response_text):
   """
-  Extracts the substring between "<end_of_turn>\n<start_of_turn>model" and the next "<end_of_turn>".
+  Removes prompt prefix "<end_of_turn>\n<start_of_turn>model..." and suffix "<end_of_turn>".
   Args:
-      text: The input text.
+      text: The response text.
   Returns:
-      The extracted substring, or None if no match is found.
+      The trimmed substring, or original if string prefix and suffix are not found.
   """
-  match = re.search(r".*<end_of_turn>\n<start_of_turn>model\n(.*)", text, re.DOTALL)
-  if match:
-    return match.group(1).strip()
-  else:
-    return text
+  # remove the prompt prefix and suffix
+  response_text = response_text.removeprefix(prefix)
+  response_text = response_text.removesuffix("<end_of_turn>")
+  return response_text
 
 # default method
 if __name__ == "__main__":
