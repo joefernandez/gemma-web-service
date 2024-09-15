@@ -15,11 +15,13 @@
 #
 
 from fastapi import FastAPI
+import uvicorn
 from pydantic import BaseModel
-from gemma_model import create_message_processor
+from gemma_model import create_model_instance
+from gemma_model import get_model_id
 
 app = FastAPI()
-model_processor = create_message_processor() # initialize model
+gemma_model = create_model_instance() # initialize model
 
 class Request(BaseModel):
     text: str
@@ -32,19 +34,18 @@ async def process_text(request: Request):
     """
     Processes the input text and returns a modified version.
     """
-    # Your text processing logic here
-    # response_text = request.text.upper()  # Example: Convert to uppercase
-
-    response_text = model_processor(request.text)
-
+    response_text = gemma_model(request.text)
     response = Response(text=response_text)
     return response
 
-# TEST FUNCTION ONLY: DELETE
-@app.get("/hello/")
+@app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return "Gemma server: OK"
 
+@app.get("/info")
+async def root():
+    return "Gemma service is using: " + get_model_id()
 
-def get_prompt():
-    return "You are an expert coder who is "
+# Run the server 
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
