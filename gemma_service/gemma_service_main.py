@@ -43,7 +43,7 @@ async def root():
     return "Gemma server: OK"
 
 @app.get("/info")
-async def root():
+async def info():
     return "Gemma service is using: " + get_model_id()
 
 # Run the server 
