@@ -25,9 +25,6 @@ os.environ["XLA_PYTHON_CLIENT_MEM_FRACTION"] = "1.00"
 
 import keras_nlp
 
-os.environ["KERAS_BACKEND"] = "jax"
-os.environ["XLA_PYTHON_CLIENT_MEM_FRACTION"] = "0.9"
-
 # set Gemma model version
 gemma_model_id = "gemma2_instruct_2b_en"
 
